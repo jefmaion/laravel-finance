@@ -1,18 +1,9 @@
 
-@if($transaction->id)
-    <form id="form-transaction" method="POST" action="{{ route('transaction.update', $transaction) }}">
-    @method('PUT')
-@else
-    <form id="form-transaction" method="POST" action="{{ route('transaction.store') }}">
-@endif
-
-
 @csrf
-
 
 <div class="row">
 
-    <div class="col-5">
+    <div class="col-3">
         <div class="form-group">
             <label for="exampleFormControlInput1">Data</label>
             <input type="date" class="form-control"  name="trans_date" value="{{ ($transaction->trans_date) ? $transaction->trans_date : date('Y-m-d') }}">
@@ -20,7 +11,15 @@
         </div>
     </div>
 
-    <div class="col">
+    <div class="col-9">
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Descrição</label>
+            <input type="text" class="font-weight-bold text-secondary form-control form-conntrol-lg" value="{{ $transaction->description }}"  name="description">
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+
+    <div class="col-3">
         <div class="form-group">
             <label for="exampleFormControlSelect1">Tipo de Despesa</label>
             <select class="form-control select2" name="amount_type">
@@ -32,22 +31,16 @@
         </div>
     </div>
 
-    <div class="col-8">
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Descrição</label>
-            <input type="text" class="font-weight-bold text-secondary form-control form-control-lg" value="{{ $transaction->description }}"  name="description">
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <div class="col-4">
+    
+    <div class="col-3">
         <div class="form-group">
             <label for="exampleFormControlInput1">Valor</label>
-            <input type="text" class="font-weight-bold text-secondary form-control form-control-lg"  name="amount" value="{{ $transaction->amount }}">
+            <input type="text" class="font-weight-bold text-secondary form-control form-cojntrol-lg"  name="amount" value="{{ $transaction->amount }}">
             <div class="invalid-feedback"></div>
         </div>
     </div>
 
-    <div class="col-12">
+    <div class="col-6">
         <div class="form-group">
             <label for="exampleFormControlSelect1">Categoria</label>
             <select class="form-control select2" name="category_id">
@@ -71,7 +64,7 @@
         </div>
     </div>
 
-    <div class="col-6">
+    <div class="col-4">
         <div class="form-group">
             <label for="exampleFormControlSelect1">Conta</label>
             <select class="form-control select2" name="account_id">
@@ -84,7 +77,7 @@
         </div>  
     </div>
 
-      <div class="col-6">
+    <div class="col-4">
         <div class="form-group">
             <label for="exampleFormControlSelect1">Forma</label>
             <select class="form-control select2" name="transaction_type_id">
@@ -97,30 +90,34 @@
         </div>  
     </div>
 
+    <div class="col-4">
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Pago?</label>
+            <select class="form-control select2" name="executed">
+            <option></option>
+            <option value="1" {{ ($transaction->executed == 1) ? 'selected' : ''  }}>Sim</option>
+            <option value="0" {{ ($transaction->executed == 0) ? 'selected' : ''  }}>Não</option>
+            </select>
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>
+
     
 
 </div>
 
 
-    <div class="form-group">
-        <label for="exampleFormControlSelect1">Pago?</label>
-        <select class="form-control select2" name="executed">
-        <option></option>
-        <option value="1" {{ ($transaction->executed == 1) ? 'selected' : ''  }}>Sim</option>
-        <option value="0" {{ ($transaction->executed == 0) ? 'selected' : ''  }}>Não</option>
-        </select>
-        <div class="invalid-feedback"></div>
-    </div>
+
 
         
 
     <div class="form-group">
       <label for="exampleFormControlTextarea1">Observação</label>
-      <textarea class="form-control" name="comments" rows="3">{{ $transaction->comments }}</textarea>
+      <textarea class="form-control" name="comments" rows="2">{{ $transaction->comments }}</textarea>
     </div>
 
 
-  </form>
+
 
 <script>
 

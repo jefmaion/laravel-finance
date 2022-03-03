@@ -27,5 +27,10 @@ Route::resource('category', CategoryController::class);
 Route::resource('transaction/type', TransactionTypeController::class);
 Route::resource('account', AccountController::class);
 
-Route::resource('transaction', TransactionController::class);
+
+
+Route::delete('transaction/deleteAll', [TransactionController::class, 'deleteAll'])->name('transaction.deleteAll');
 Route::get('transaction/form/{id}', [TransactionController::class, 'form'])->name('transaction.form');
+Route::get('transaction/{start?}/{end?}', [TransactionController::class, 'index'])->name('transaction.range');
+
+Route::resource('transaction', TransactionController::class);

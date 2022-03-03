@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Interfaces\RepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 class BaseRepository implements RepositoryInterface {
 
@@ -47,6 +48,12 @@ class BaseRepository implements RepositoryInterface {
     public function destroy(int $id): void
     {
         $this->model->destroy($id);
+    }
+
+    public function destroyMany($arrayId) {
+        // $this->model->whereIn('id', $arrayId)->delete();
+
+        $this->model->destroy($arrayId);
     }
 
 }

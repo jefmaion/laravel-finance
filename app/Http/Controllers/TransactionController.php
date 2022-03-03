@@ -32,19 +32,24 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($start=null, $end=null)
     {
 
+     
+
+
         $data = [
-            'transactions' => $this->serviceTransaction->listTransactions(),
+            'transactions' => $this->serviceTransaction->listTransactions($start,$end),
             'resume' => $this->serviceTransaction->getResume(),
             'resumeCategory' => $this->serviceTransaction->getSumByCategory(),
+            'range' => $this->serviceTransaction->getListMonths(12, $start)
         ];
 
         return view('transaction.index', $data);
     }
 
     public function form($id=0) {
+
 
         if($id == 0) {
             return $this->create();
@@ -69,7 +74,7 @@ class TransactionController extends Controller
             'types'       => $this->serviceTransactionType->listTransactionTypes()
         ];
 
-        return view('transaction.form', $data)->render();
+        return view('transaction.create', $data)->render();
     }
 
     /**
@@ -110,7 +115,7 @@ class TransactionController extends Controller
             'types'       => $this->serviceTransactionType->listTransactionTypes()
         ];
 
-        return view('transaction.form', $data)->render();
+        return view('transaction.update', $data)->render();
     }
 
     /**
@@ -126,6 +131,12 @@ class TransactionController extends Controller
         return true;
     }
 
+    public function deleteAll(Request $request) {
+       
+        $this->serviceTransaction->deleteMany($request['transaction']);
+        return true;
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -137,4 +148,6 @@ class TransactionController extends Controller
         $this->serviceTransaction->deleteTransaction($id);
         return redirect(route('transaction.index'));
     }
+
+
 }

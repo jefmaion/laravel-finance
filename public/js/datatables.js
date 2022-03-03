@@ -8,6 +8,7 @@ $(document).ready( function () {
         paging: true, 
         info: false,
         bLengthChange: false,
+        "ordering": false
     }
 
     $('table').DataTable(options);

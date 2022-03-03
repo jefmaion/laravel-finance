@@ -15,8 +15,9 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
     }
 
 
-    public function all() : Collection {
-        return Transaction::orderBy('created_at', 'desc')->get();
+    public function all($start=null, $end=null) : Collection {
+        // return Transaction::orderBy('created_at', 'desc')->get();
+        return Transaction::whereBetween('trans_date', [$start, $end])->orderBy('executed', 'asc')->orderBy('trans_date', 'desc')->get();
     }
 
     public function getSumResume() {
