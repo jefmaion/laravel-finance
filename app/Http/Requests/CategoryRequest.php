@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,9 +25,11 @@ class CategoryRequest extends FormRequest
      */
     public function rules()
     {
+
+
         return [
-            // 'name' => 'required|unique:categories'
-            'name' => ['required', Rule::unique('categories')->ignore($this->category)]
+            'name' => ['required', Rule::unique('categories')->ignore($this->category)->where('category_id', $this->category_id)]
+            
         ];
     }
 }

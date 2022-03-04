@@ -35,14 +35,15 @@ class TransactionController extends Controller
     public function index($start=null, $end=null)
     {
 
-     
 
+      
 
         $data = [
             'transactions' => $this->serviceTransaction->listTransactions($start,$end),
-            'resume' => $this->serviceTransaction->getResume(),
+            'resume' => $this->serviceTransaction->getResume($start, $end),
             'resumeCategory' => $this->serviceTransaction->getSumByCategory(),
-            'range' => $this->serviceTransaction->getListMonths(12, $start)
+            'range' => $this->serviceTransaction->getListMonths(12, $start),
+            'month' => $this->serviceTransaction->getMonthLinks($start),
         ];
 
         return view('transaction.index', $data);
@@ -71,7 +72,8 @@ class TransactionController extends Controller
             'transaction' => new Transaction(),
             'categories'  => $this->serviceCategory->listCategories(),
             'accounts'    => $this->serviceAccount->listAccounts(),
-            'types'       => $this->serviceTransactionType->listTransactionTypes()
+            'types'       => $this->serviceTransactionType->listTransactionTypes(),
+            'descriptionList' => $this->serviceTransaction->listDistinctsTransactionsDescription()
         ];
 
         return view('transaction.create', $data)->render();
@@ -112,7 +114,8 @@ class TransactionController extends Controller
             'transaction' => $this->serviceTransaction->getTransaction($id),
             'categories'  => $this->serviceCategory->listCategories(),
             'accounts'    => $this->serviceAccount->listAccounts(),
-            'types'       => $this->serviceTransactionType->listTransactionTypes()
+            'types'       => $this->serviceTransactionType->listTransactionTypes(),
+            'descriptionList' => $this->serviceTransaction->listDistinctsTransactionsDescription()
         ];
 
         return view('transaction.update', $data)->render();

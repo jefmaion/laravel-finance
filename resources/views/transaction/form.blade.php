@@ -11,10 +11,27 @@
         </div>
     </div>
 
-    <div class="col-9">
+    <div class="col-7">
         <div class="form-group">
             <label for="exampleFormControlInput1">Descrição</label>
-            <input type="text" class="font-weight-bold text-secondary form-control form-conntrol-lg" value="{{ $transaction->description }}"  name="description">
+            <input type="text" class="font-weight-bold text-secondary form-control form-conntrol-lg" id="description" autocomplete="off" value="{{ $transaction->description }}"  name="description">
+            <div class="invalid-feedback"></div>
+            <div class="border position-absolute w-100 bg-white" style="z-index:1000" id="search-box">
+               <table id="table-description" class="table table-sm ">
+                    @foreach($descriptionList as $desc)
+                        <tr>
+                            <td> <a href="#" class="smsall text-muted search-click">{{ $desc->description }}</a></td>
+                        </tr>
+                    @endforeach
+               </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-2">
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Valor</label>
+            <input type="text" class="font-weight-bold text-secondary form-control form-cojntrol-lg"  name="amount" value="{{ $transaction->amount }}">
             <div class="invalid-feedback"></div>
         </div>
     </div>
@@ -32,28 +49,22 @@
     </div>
 
     
-    <div class="col-3">
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Valor</label>
-            <input type="text" class="font-weight-bold text-secondary form-control form-cojntrol-lg"  name="amount" value="{{ $transaction->amount }}">
-            <div class="invalid-feedback"></div>
-        </div>
-    </div>
+    
 
-    <div class="col-6">
+    <div class="col-9">
         <div class="form-group">
             <label for="exampleFormControlSelect1">Categoria</label>
             <select class="form-control select2" name="category_id">
                 <option></option>
                 @foreach($categories as $category)
 
-                <optgroup label="{{ $category->id }}. {{ $category->name }}" >
+                <optgroup label="{{ $category->name }}" >
 
                     @if(count($category->subcategory) == 0)
-                        <option value="{{ $category->id }}" {{ ($transaction->category_id == $category->id) ? 'selected' : ''  }}>{{ $category->id }}. {{ $category->name }}</option>             
+                        <option value="{{ $category->id }}" {{ ($transaction->category_id == $category->id) ? 'selected' : ''  }}>{{ $category->name }}</option>             
                     @else
                         @foreach($category->subcategory as $sub)
-                        <option  value="{{ $sub->id }}" {{ ($transaction->category_id == $sub->id) ? 'selected' : ''  }}>{{ $category->id }}.{{ $sub->id }} {{ $sub->name }}</option>
+                        <option  value="{{ $sub->id }}" {{ ($transaction->category_id == $sub->id) ? 'selected' : ''  }}>{{ $sub->name }}</option>
                         @endforeach  
                     @endif
 
@@ -124,5 +135,40 @@
     $('.select2').select2({
         theme:"bootstrap4",
         placeholder: "Selecione uma opção",
+        tags: true
+    });
+
+
+    $(document).ready(function(){
+
+        $('#search-box').hide();
+
+        $("#description").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+
+            if(value == '') {
+                $('#search-box').hide();
+                return 
+            }
+
+
+
+            $("#table-description tr").filter(function() {
+                if($(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)) {
+                    $('#search-box').show();
+                    return
+                } 
+                $('#search-box').hide();
+            });
+
+            
+        });
+
+        $('.search-click').click(function() {
+            var value = $(this).html()
+            $('#description').val(value);
+            $('#search-box').hide();
+            return;
+        });
     });
 </script>

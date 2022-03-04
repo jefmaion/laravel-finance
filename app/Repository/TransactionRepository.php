@@ -17,16 +17,37 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
 
     public function all($start=null, $end=null) : Collection {
         // return Transaction::orderBy('created_at', 'desc')->get();
-        return Transaction::whereBetween('trans_date', [$start, $end])->orderBy('executed', 'asc')->orderBy('trans_date', 'desc')->get();
+        return Transaction::whereBetween('trans_date', [$start, $end])->orderBy('executed', 'asc')->orderBy('created_at', 'desc')->get();
     }
 
-    public function getSumResume() {
-        return DB::table('transactions')
-                ->select(DB::raw("SUM(amount) AS amount"))
-                ->groupBy('amount_type')
-                ->whereNull('deleted_at')
-                ->where('executed', '=', 1)
-                ->get();
+    public function listDescriptions() {
+        return DB::table('transactions')->select('description')->distinct()->get();
+    }
+
+    public function listByMonth($month=null, $year=null) {
+        // return Transaction::whereMo('MONTH(trans_date)', '=', $month)->where('YEAR(trans_date)', '=', $year)->get();
+        return Transaction::whereMonth('trans_date', '=', $month)->whereYear('trans_date', $year)->orderBy('description', 'asc')->get();
+    }
+
+    public function getSumResume($start, $end) {
+        // return DB::table('transactions')
+        //         ->select(DB::raw("SUM(amount) AS amount"))
+        //         ->groupBy('amount_type')
+        //         ->whereNull('deleted_at')
+        //         ->where('executed', '=', 1)
+        //         ->get();
+
+
+
+        return DB::table('transactions AS a')
+            ->selectRaw("
+                        sum(CASE WHEN a.amount_type = 1 THEN a.amount ELSE 0 END) AS receitas,
+                        sum(CASE WHEN a.amount_type = 2 THEN a.amount ELSE 0 END) AS despesas,
+                        sum(CASE WHEN a.amount_type = 1 THEN a.amount ELSE 0 END) - sum(CASE WHEN a.amount_type = 2 THEN a.amount ELSE 0 END) as saldo"
+                    )
+            ->where('a.executed', '=', 1)
+            ->whereBetween('a.trans_date', [$start, $end])
+            ->first();
     }
 
     public function getSumByCategory() {

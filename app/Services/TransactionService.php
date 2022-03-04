@@ -14,6 +14,10 @@ class TransactionService {
         $this->transactionRepository = $TransactionRepository;
     }
 
+    public function listDistinctsTransactionsDescription() {
+        return $this->transactionRepository->listDescriptions();
+    }
+
     public function getListMonths($max=12, $select=null) {
 
         
@@ -36,6 +40,24 @@ class TransactionService {
 
         return $d;
 
+    }
+
+    public function getMonthLinks($start=null) {
+
+        $months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+        $start = (!$start) ? date('Y-m-01') : $start;
+
+
+        $next = date('Y-m-01', strtotime('+1 months', strtotime($start)));
+        $prev = date('Y-m-01', strtotime('-1 months', strtotime($start)));
+
+        return  [
+            'label' => $months[(date('n', strtotime($start))-1)] . '/' . date('y', strtotime($start)),
+            'current' => [$start, (new DateTime(date('Y-m-01', strtotime($start))))->format( 'Y-m-t' )],
+            'next' => [$next, (new DateTime(date('Y-m-01', strtotime($next))))->format( 'Y-m-t' )],
+            'prev' => [$prev, (new DateTime(date('Y-m-01', strtotime($prev))))->format( 'Y-m-t' )],
+        ];
     }
 
     public function getTransaction(int $id) {
@@ -81,6 +103,10 @@ class TransactionService {
         return $create;
     }
 
+    public function listTransactionsByMonth($month=null, $year=null) {
+        return $this->transactionRepository->listByMonth($month, $year);
+    }
+
     public function updateTransaction(array $request, int $id) {
         return $this->transactionRepository->update($request, $id);
     }
@@ -103,8 +129,17 @@ class TransactionService {
         return $this->transactionRepository->all($start, $end);
     }
 
-    public function getResume() {
-        return $this->transactionRepository->getSumResume();
+    public function getResume($start=null, $end=null) {
+
+
+        if(is_null($start)) {
+            $params = $this->getMonthLinks();
+
+            $start = $params['current'][0];
+            $end = $params['current'][1];
+        }
+
+        return $this->transactionRepository->getSumResume($start, $end);
     }
     public function getSumByCategory() {
         return $this->transactionRepository->getSumByCategory();

@@ -8,7 +8,7 @@
             <div class="col">
                 <h1 class="m-0">
                     <i class="fas fa-list    "></i>
-                    Lançamentos
+                    Lançamentos - {{ $month['label'] }}
                 </h1>
             </div>
             <div class="col-sm-3">
@@ -27,34 +27,81 @@
 
 @section('content')
 
+
     <div class="row">
 
         <div class="col-12">
             <div class="card card-secondary card-outline">
                 <div class="card-body">
 
+                    <div class="row mb-2">
+
+                        <div class="col">
+                            <a class="btn btn-lg btn-success" href="#" data-toggle="modal" data-target="#modal-transaction" data-id="0" role="button"><i class="fas fa-plus-circle"></i> Novo Lançamento</a>
+                        </div>
+                        
+
+                        <div class="col text-center">
+                            
+                            <span class="h2  ">
+                                <a class="border btn btn-sm btn-light" href="{{ route('transaction.range', $month['prev']) }}"><i class=" fas fa-angle-left    "></i></a>
+                                {{ $month['label'] }}
+                                <a class="border btn-sm btn btn-light" href="{{ route('transaction.range', $month['next']) }}"><i class="fas fa-angle-right    "></i></a> 
+                            </span>
+                            
+                        </div>
+
+                        <div class="col text-right">
+                            
+                            <button type="button" class="btn btn-primary">
+                                <i class="fas fa-filter    "></i>
+                            </button>
+                        </div>
+                    </div>
+
+                  <hr>
+                    
+                   
+
                    
                    
                     <div class="row mb-3">
                         <div class="col">
-                            <div class="form-row align-items-center">
+                            <div class="form-row aligsn-items-center">
 
                                 <div class="col-auto">
                                     <div class="dropdown open">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                                                aria-expanded="false">
-                                                    Com Selecionados
-                                                </button>
+
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Com Selecionados
+                                        </button>
+
                                         <div class="dropdown-menu" aria-labelledby="triggerId">
-                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all">Excluir</button>
-                                            <button class="dropdown-item disabled" href="#">Disabled action</button>
+                                            <p class="dropdown-header text-dark text-left font-weight-bold"> <i class="fas fa-cogs    "></i> Gerenciar</p>
+                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all">
+                                                <i class="fas fa-trash-alt    "></i> Excluir</button>
+                                            
+                                            <div class="dropdown-divider"></div>
+
+                                            <p class="dropdown-header text-dark text-left font-weight-bold"><i class="fas fa-pencil-alt    "></i> Alterar</p>
+                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all"> Descrição</button>
+                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all">Categoria</button>
+                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all">Forma</button>
+                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all">Comentários</button>
+
+                                            <div class="dropdown-divider"></div>
+
+                                            <p class="dropdown-header text-dark text-left font-weight-bold"><i class="fas fa-check    "></i> Definir como:</p>
+                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all"> Pago</button>
+                                            <button class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-delete-all"><i class="fas fa-exclamation    "></i> Em Aberto</button>
                                         </div>
+
                                     </div>
                                 </div>
 
-                                <div class="col-auto">
+                                {{-- <div class="col-auto">
                                     <a class="btn btn-success" href="#" data-toggle="modal" data-target="#modal-transaction" data-id="0" role="button"><i class="fas fa-plus-circle"></i> Adicionar</a>
-                                </div>
+                                </div> --}}
         
                                 <div class="col">
                                     <input type="text" class="form-control" name="datatable-search" id="datatable-search" aria-describedby="helpId" placeholder="Pesquisar">
@@ -65,10 +112,13 @@
 
      
                     </div>
+
+                    
+
                     
                     <form id="form-container"> 
                         @csrf
-                    <table class="mt-4 table table-stripsed tablse-bordered table-sm">
+                    <table class="mt-4 table table-striped tablse-bordered tabsle-sm">
                         <thead class="thead-light">
                             <tr>
                                 <th class="text-center">
@@ -176,75 +226,32 @@
 
                          
                         </tbody>
+
+                        <tfoot class="thead-light">
+                            <tr>
+                                <th colspan="5">Resumo</th>
+                                <th >
+                                    Receitas: <span class="text-success">{{ $resume->receitas }}</span>
+                                </th>
+                                <th >
+                                    Despesas: <span class="text-danger">{{ $resume->despesas }}</span>
+                                </th>
+                                <th >
+                                    Saldo: <span class="text-{{ ($resume->saldo > 0) ? 'success' : 'danger' }}">{{ $resume->saldo }}</span>
+                                </th>
+                            </tr>
+                          
+                        </tfoot>
                         
                     </table>
                     </form>
-                    <hr>
-
+                   
+                   
         
                 </div>
             </div>
         </div>
 
-
-        {{-- <div class="col">
-
-            <div class="card card-secondary card-outline">
-                <div class="card-body">
-                    <p><b>Resumo do Período</b></p>
-
-  
-                    
-                    <table class="table table-sm">
-                        <tbody>
-                            <tr>
-                                <td>Receitas</td>
-                                <td class="text-right text-success font-weight-bold">R$ {{ (isset($resume[0])) ? $resume[0]->amount : 0 }}</td>
-                            </tr>
-                            <tr>
-                                <td>Despesas</td>
-                                <td class="text-right text-danger font-weight-bold">R$ {{ (isset($resume[1])) ? $resume[1]->amount : 0 }}</td>
-                            </tr>
-                            <tr class="bg-light">
-                                <td>Saldo</td>
-                                <td class="text-right">R$ </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-   
-                </div>
-            </div>
-            <div class="card card-secondary card-outline">
-                <div class="card-body">
-                    <p><b>Resumo Por Categoria</b></p>
-
-                    <table class="table table-sm">
-                      
-                        <tbody>
-                            @foreach($resumeCategory as $cat)
-                            <tr>
-                                <td>
-                                    {{ $cat->name }}
-                                    <div class="progress progress-xxs">
-                                        <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                            <span class="sr-only">60% Complete (warning)</span>
-                                        </div>
-                                    </div>
-                                </td>
-                             
-                                <td class="text-right">R$ {{ $cat->amount }}</td>
-                            </tr>
-                            @endforeach
-
-                        </tbody>
-                      
-                    </table>
-                </div>
-            </div>
-
-            
-        </div> --}}
 
     </div>
 

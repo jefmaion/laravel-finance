@@ -9,11 +9,11 @@ class Category extends BaseModel
 {
     public function categories()
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Category::class)->orderBy('name');
     }
 
     public function subcategory()
     {
-        return $this->hasMany(Category::class)->with('categories');
+        return $this->hasMany(Category::class)->with('categories')->orderBy('name');
     }
 }
